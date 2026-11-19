@@ -1,8 +1,8 @@
 # Arduino Gas Detector
 
 <p align="center">
-  <strong>Gaz seviyesi ve sıcaklık eşiğine dayalı alarm prototipi</strong><br>
-  Arduino, MQ-135 analog ölçümü ve DHT11 sıcaklık sensörüyle buzzer/röle kontrolü.
+  <strong>Alarm prototype driven by gas level and temperature thresholds</strong><br>
+  Arduino with MQ-135 analog gas sensing and a DHT11 temperature sensor, driving a buzzer and a relay.
 </p>
 
 <p align="center">
@@ -11,49 +11,51 @@
   <img alt="Firmware" src="https://img.shields.io/badge/Firmware-C%2B%2B-blue?logo=cplusplus&logoColor=white">
 </p>
 
+🇹🇷 [Türkçe README](README.tr.md)
+
 ---
 
-## Genel Bakış
+## Overview
 
-Bu Arduino sketch'i MQ-135 sensöründen analog gaz değeri okur, DHT11 ile sıcaklığı belirli aralıklarla ölçer ve eşiklerden biri aşıldığında buzzer ile röleyi etkinleştirir. Dijital gaz sensörü çıkışı da alarm koşuluna dahil edilmiştir. Seri port üzerinden tanılama değerleri yazdırılır.
+This Arduino sketch reads an analog gas value from an MQ-135 sensor, measures temperature with a DHT11 at fixed intervals and turns on a buzzer and a relay when any threshold is exceeded. The digital output of the gas module is also part of the alarm condition. Diagnostic values are printed over serial.
 
-## Donanım ve Pinler
+## Hardware and pins
 
-| Bileşen | Arduino pini | Amaç |
+| Component | Arduino pin | Purpose |
 |---|---:|---|
-| DHT11 | D2 | Sıcaklık ölçümü |
-| MQ-135 analog çıkış | A0 | Analog gaz seviyesi |
-| Dijital gaz çıkışı | D6 | Dijital alarm girişi |
-| Buzzer | D7 | Sesli alarm |
-| Röle | D8 | Harici alarm/çıkış |
-| Seri port | 9600 baud | Tanılama çıktısı |
+| DHT11 | D2 | Temperature |
+| MQ-135 analog out | A0 | Analog gas level |
+| Gas module digital out | D6 | Digital alarm input |
+| Buzzer | D7 | Audible alarm |
+| Relay | D8 | External alarm / output |
+| Serial | 9600 baud | Diagnostics |
 
-Pin eşleşmelerini kullandığınız kart ve modüllere göre doğrulayın.
+Check the pin mapping against your board and modules.
 
-## İşleyiş
+## How it works
 
-- 🌡️ DHT11 sıcaklığı yaklaşık iki saniyede bir okunur.
-- 📈 MQ-135 analog değeri her döngüde okunur.
-- 🚨 Analog değer 550 eşiğini aşarsa, sıcaklık 50 °C'yi geçerse veya dijital gaz girişi aktifse alarm devreye girer.
-- 🔊 Alarm sırasında buzzer yaklaşık 300 ms aralıkla açılıp kapanır.
-- 🔌 Alarm aktifken röle çıkışı HIGH olur.
-- 🖥️ Gaz, dijital giriş ve sıcaklık değerleri seri porta yaklaşık 500 ms aralıkla yazdırılır.
+- 🌡️ DHT11 temperature is read about every 2 s.
+- 📈 MQ-135 analog value is read every loop.
+- 🚨 The alarm turns on when the analog value exceeds 550, temperature exceeds 50 °C, or the digital gas input is active.
+- 🔊 During an alarm the buzzer toggles about every 300 ms.
+- 🔌 The relay output is HIGH while the alarm is active.
+- 🖥️ Gas, digital input and temperature are printed to serial about every 500 ms.
 
-## Kurulum
+## Setup
 
-1. Arduino IDE'yi açın.
-2. DHT sensör kütüphanesini kurun.
-3. GasDedector.ino dosyasını açın.
-4. Kartı ve doğru portu seçip firmware'i yükleyin.
-5. Seri monitörü 9600 baud hızında açarak ölçümleri gözlemleyin.
-6. Alarm eşiklerini sensör modülünüz ve test koşullarınız için kontrollü şekilde ayarlayın.
+1. Open the Arduino IDE.
+2. Install the DHT sensor library.
+3. Open `GasDedector/GasDedector.ino`.
+4. Select the board and port, then upload.
+5. Open the Serial Monitor at 9600 baud to watch the readings.
+6. Tune the thresholds for your sensor module under controlled test conditions.
 
-## Güvenlik Uyarısı
+## Safety notice
 
-**Bu proje tek başına sertifikalı bir gaz kaçağı veya yangın alarmı değildir.** MQ-135 ölçümü gaz türüne, kalibrasyona, ısınma süresine ve çevre koşullarına bağlıdır; 550 değeri evrensel bir ppm karşılığı değildir. Gerçek güvenlik uygulamalarında uygun sertifikalı dedektör, kalibrasyon, yedekli algılama ve fail-safe tasarım gerekir.
+**This project is not a certified gas-leak or fire alarm.** MQ-135 readings depend on gas type, calibration, warm-up time and ambient conditions; the value 550 is not a universal ppm figure. Real safety applications need a certified detector, calibration, redundant sensing and a fail-safe design.
 
-Röleye bağlı yükün elektriksel değerlerini kontrol edin; Arduino pinleriyle yüksek güçlü yükleri doğrudan sürmeyin. Gerçek gaz ortamında tehlikeli testler yapmayın.
+Check the electrical rating of whatever the relay switches, and never drive high-power loads directly from Arduino pins. Do not run tests in a real hazardous gas environment.
 
-## Durum
+## Status
 
-Bu depo bir Arduino prototipini belgelendirir. Gerçek ortamda güvenlik amaçlı kullanım için uygun değildir; önce laboratuvar ortamında doğrulanmalıdır.
+Prototype for learning and bench testing. Validate in a lab before any real-world use.
